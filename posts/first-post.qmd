@@ -1,5 +1,5 @@
 ---
-title: "Hello Quarto"
+title: "Initial Reflections Post"
 description: "Welcome to my Quarto portfolio"
 author: "Matthew Molinar"
 date: "08/27/25"
@@ -8,3 +8,5 @@ categories:
   - labreport
 draft: false
 ---
+
+My main goal for this semester in MicroP's is to learn new skills that will be useful to me as an electrical engineer. I haven't had much experience working with embedded systems, so I would love to become more comfortable in this realm. I really enjoy music, so for my final project I think working on something audio related would be really fun.
