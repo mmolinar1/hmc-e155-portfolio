@@ -1,0 +1,93 @@
+## Lab 1: FPGA and MCU Setup and Testing
+
+### Introduction
+In this lab, a design was implemented on the FPGA to demonstrate the functionality of the on-board high-speed oscillator by blinking one of the on-board LEDs. The high speed oscillator was configured at a frequency of 48 MHz and divided down using a counter to achieve a blinking frequency of 2.4 Hz.
+
+Furthermore, this design used 4 switches as inputs. These switches turned on an on-board LED by acting as a XOR gate and turned on another on-board LED by acting as an AND gate.
+
+Finally, this design used the same four switches, acting as a four bit binary number, to turn on a seven-segment display to show all hex digits from 0 to F.
+
+### Design and Testing Methodology
+This design consists of two lower level modules, which control a seven segment display and on-board LEDs. Both of these modules were called within a top level module.
+
+The seven-segment module uses a case statemnt to map 4 bit hex digit inputs to its corresponding seven-segment output. As a result, flipping switches s[3:0] would display the correct hex digits ranging from 0 to F. Although, I wasn't able to verify this module with testbenches, I was able to verify that it functioned as expected by visually confirming correct hex digit representation using hardware. 
+
+The LED control module was used to blink on-board LEDs. First, the on-board high speed oscillator (HSOSC) was used to generate a 48 MHz signal. Then, a counter set to 20 million was used to divide the clock signal. As a result, led[2] was toggled on and off at a frequency of 2.4 Hz. The other two LEDs were toggled using switches s[3:0]. The first led, led[0], was turned on by the XOR of s[0] and s[1]. The second led, led[1], was turned on by the AND of s[2] and s[3]. Again, I wasn't able to verify this module with testbenches, but I was able to verify that it functioned as expected by visually confirming correct behavior using hardware.
+
+Finally, the top level design uses the switch inputs s[3:0] to control logic from the seven-segment and led control modules.
+
+### Technical Documentation:
+The source code for the project can be found in the associated [GitHub repository](https://github.com/mmolinar1/e155-lab1).
+
+#### Block Diagram
+
+![Figure 1](images/lab1_block_diagram.jpeg)(Figure 1: Block Diagram of the Verilog Design)
+
+The block diagram in Figure 1 demonstrates the overall architecture of the design. The top-level module, top, includes two submodules: the led control module (led_control) and the seven segment display module (seven_seg).
+
+#### Schematic
+
+![Figure 2](images/lab1_schematic.jpeg)(Figure 2: Schematic of physical layout)
+
+Figure 2 shows the physical layout of the design. The seven-segment display was connected using 162 Ω current-limmiting resistors to ensure the output current was about 8 mA. This was calculated using ohms law. The board is being powered with 3.3 V, and the display LEDs (deep red) have a forward voltage of 2 V. Therefore, (3.3 - 2 V) / 162 Ω is ~ 8 mA.
+
+### Results and Discussion
+
+The design met all intended design objectives. This was verified via visual confirmation of the on-board LEDs and the seven-segment display lighting up as intetned when switches were flipped in different configurations. Given more time, I would have done test bench simulations as this would be a much better tool for verifying that a design works exactly as intended.
+
+### Conclusion
+
+The design succesfully blinked an on-board LED at 2.4 Hz, toggled on-board LED's based on XOR and AND gate behavior, and displayed hex digits from 0 to F on a seven-segment display. I spent a total of 15 hours on this lab.
+
+### AI Prototype Summary
+
+For the following AI Prototype, I will be using ChatGPT.
+
+#### Prompt
+Write SystemVerilog HDL to leverage the internal high speed oscillator in the Lattice UP5K FPGA and blink an LED at 2 Hz. Take full advantage of SystemVerilog syntax, for example, using logic instead of wire and reg.
+
+#### Generated Code
+
+// Blink an LED at 2 Hz using the internal HFOSC of the UP5K
+module top (
+    output logic led   // drive LED pin
+);
+
+    // Internal oscillator (HFOSC) primitive
+    logic clk_hf, clk_en;
+
+    // Lattice UP5K HFOSC instantiation
+    // CLKHF_DIV: "0b00" = 48 MHz, "0b01" = 24 MHz, "0b10" = 12 MHz
+    // Here we choose 12 MHz to make the divider smaller.
+    HSOSC #(
+        .CLKHF_DIV("0b10")  // 12 MHz
+    ) u_hfosc (
+        .CLKHFPU(1'b1),     // power up
+        .CLKHFEN(1'b1),     // enable
+        .CLKHF(clk_hf)      // clock output
+    );
+
+    // Parameters for blink frequency
+    localparam int CLK_FREQ_HZ = 12_000_000;   // HFOSC = 12 MHz
+    localparam int BLINK_HZ    = 2;            // desired blink rate
+    localparam int HALF_PERIOD = CLK_FREQ_HZ / (2 * BLINK_HZ);
+
+    // Counter for frequency division
+    logic [$clog2(HALF_PERIOD)-1:0] counter;
+
+    // LED toggle logic
+    always_ff @(posedge clk_hf) begin
+        if (counter == HALF_PERIOD-1) begin
+            counter <= '0;
+            led <= ~led;
+        end else begin
+            counter <= counter + 1;
+        end
+    end
+
+endmodule
+
+
+#### Reflection
+
+I think the quality of the output is really high because it produced very clean and readable code. I was mostly able to follow the code that was generated, however, it used syntax such as localparam and $clog2 that was new to me. Surprisingly, the LLM-generated code synthesized first round. I think this was largely due to the prompt that it was fed. Thus when using LLMs in my workflow I will make sure to be as descriptive as possible. Next time however, I will make sure to ask about specifc syntax that it's using that I am not familiar with.
