@@ -1,0 +1,12 @@
+---
+title: "First Week of MicroP's"
+description: "My thoughts after week 1 of MicroP's"
+author: "Matthew Molinar"
+date: "09/04/2025"
+categories:
+  - reflection
+  - labreport
+draft: false
+---
+
+I think lab 1 took me a lot longer that I anticipated. Soldering was definitely a time suck and I also hadn't touched system verilog in so long. That being said, I think the first lab was a good way to revist the system verilog and practice writing a lab report. I'm hoping that lab 2 will be a much smoother sail after having done lab 1. Going into lab 2, I will make sure to start with testbenches before going to hardware. I think this would be a good way to verify that my design works and help save a lot of time debugging.
