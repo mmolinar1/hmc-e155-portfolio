@@ -248,7 +248,10 @@ V = IR \quad \Rightarrow \quad R = \frac{V}{I} = \frac{2.6}{0.008} = 325 \, \Ome
 \]</span></p>
 <p>For the seven-segment display LEDs, I used 1 kΩ resistors based on the following equation:</p>
 <p><span class="math display">\[
-V = 3.3 - V_f = 3.3 - 2 = 1.3 \, \text{V}
+V = 3.3 - V_f - V{CE(sat)} = 3.3 - 2 - 0.25 = 1.05 \, \text{V}
+\]</span></p>
+<p><span class="math display">\[
+V = IR \quad \Rightarrow \quad I = \frac{V}{R} = \frac{1.05}{1000} = 1.05 \, mA
 \]</span></p>
 <p>I didn’t want the LEDs on the display to run too hot or be too bright, so I just used 1 kΩ resistors resulting in a current of 1.3 mA. Finally, I used 560 Ω resisots for the off-board LEDs based on the following equations:</p>
 <p><span class="math display">\[
