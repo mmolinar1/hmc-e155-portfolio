@@ -1,0 +1,12 @@
+---
+title: "Week 2 of MicroP's"
+description: "My thoughts after week 2 of MicroP's"
+author: "Matthew Molinar"
+date: "09/12/2025"
+categories:
+  - reflection
+  - labreport
+draft: false
+---
+
+Lab 2 also took me a good amount of time, but I stuck to my plan of starting with testbenches before trying to build hardware, which saved me a lot of time. I think this strategy saved me a lot of time because when building the circuit I knew for a fact there was a hardware problem, which narrowed down the list of possible bugs. I'm still not the most comfortable with System Verilog, but I definitely feel like I'm sharper especially when compared to my experience in Lab 1. On a different note, I'm really looking forward to working with a MCU in about two week and I think it'll be fun.
