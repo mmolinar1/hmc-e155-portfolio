@@ -8,32 +8,53 @@ Furthermore, this design used 4 switches as inputs. These switches turned on an 
 Finally, this design used the same four switches, acting as a four bit binary number, to turn on a seven-segment display to show all hex digits from 0 to F.
 
 ### Design and Testing Methodology
+
+#### Design Methodology
 This design consists of two lower level modules, which control a seven segment display and on-board LEDs. Both of these modules were called within a top level module.
 
-The seven-segment module uses a case statemnt to map 4 bit hex digit inputs to its corresponding seven-segment output. As a result, flipping switches s[3:0] would display the correct hex digits ranging from 0 to F. Although, I wasn't able to verify this module with testbenches, I was able to verify that it functioned as expected by visually confirming correct hex digit representation using hardware. 
+The seven-segment module uses a case statemnt to map 4 bit hex digit inputs to its corresponding seven-segment output. As a result, flipping switches s[3:0] would display the correct hex digits ranging from 0 to F. 
 
-The LED control module was used to blink on-board LEDs. First, the on-board high speed oscillator (HSOSC) was used to generate a 48 MHz signal. Then, a counter set to 20 million was used to divide the clock signal. As a result, led[2] was toggled on and off at a frequency of 2.4 Hz. The other two LEDs were toggled using switches s[3:0]. The first led, led[0], was turned on by the XOR of s[0] and s[1]. The second led, led[1], was turned on by the AND of s[2] and s[3]. Again, I wasn't able to verify this module with testbenches, but I was able to verify that it functioned as expected by visually confirming correct behavior using hardware.
+The LED control module was used to blink on-board LEDs. First, the on-board high speed oscillator (HSOSC) was used to generate a 48 MHz signal. Then, a counter set to 20 million was used to divide the clock signal. As a result, led[2] was toggled on and off at a frequency of 2.4 Hz. The other two LEDs were toggled using switches s[3:0]. The first led, led[0], was turned on by the XOR of s[0] and s[1]. The second led, led[1], was turned on by the AND of s[2] and s[3]. 
 
 Finally, the top level design uses the switch inputs s[3:0] to control logic from the seven-segment and led control modules.
+
+#### Testing Methodology
+Testing this design was done via simulation and hardware verification.
+
+First, all lower level modules were tested on their own to make sure all possible inputs work. Then, for simulation of the top module I made sure to test all posible inputs for lower level modules to make sure they interacted properly.
+
+For hardware verification, I was able to verify that it functioned as expected by visually confirming correct hex digit representation using hardware. I was also able to verify that the LEDs lit up properly with visual confirmation.
 
 ### Technical Documentation:
 The source code for the project can be found in the associated [GitHub repository](https://github.com/mmolinar1/e155-lab1).
 
 #### Block Diagram
 
-![Figure 1](images/lab1_block_diagram.jpeg)(Figure 1: Block Diagram of the Verilog Design)
+![Figure 1](images/lab1_mm_block_diagram.jpeg)(Figure 1: Block Diagram of the Verilog Design)
 
 The block diagram in Figure 1 demonstrates the overall architecture of the design. The top-level module, top, includes two submodules: the led control module (led_control) and the seven segment display module (seven_seg).
 
 #### Schematic
 
-![Figure 2](images/lab1_schematic.jpeg)(Figure 2: Schematic of physical layout)
+![Figure 2](images/lab1_mm_schematic.jpeg)(Figure 2: Schematic of physical layout)
 
 Figure 2 shows the physical layout of the design. The seven-segment display was connected using 162 Ω current-limmiting resistors to ensure the output current was about 8 mA. This was calculated using ohms law. The board is being powered with 3.3 V, and the display LEDs (deep red) have a forward voltage of 2 V. Therefore, (3.3 - 2 V) / 162 Ω is ~ 8 mA.
 
 ### Results and Discussion
 
-The design met all intended design objectives. This was verified via visual confirmation of the on-board LEDs and the seven-segment display lighting up as intetned when switches were flipped in different configurations. Given more time, I would have done test bench simulations as this would be a much better tool for verifying that a design works exactly as intended.
+#### Test Bench Simulation
+
+![Figure 3](images/lab1_led_control.png)(Figure 3: A screenshot of a QuestaSim simulation demonstrating accurate control and behavior of the LEDs.)
+
+![Figure 4](images/lab1_seven_seg.png)(Figure 4: A screenshot of a QuestaSim simulation demonstrating proper driving of the seven-segment display.)
+
+![Figure 5](images/lab1_top.png)(Figure 5: A screenshot of a QuestaSim simulation demonstrating that all sub-modules works together accurately within the top module.)
+
+The design met all intended design objectives. Figure 3 shows that the led_control module works as intended. Any red signals are just don't cares (x's) for one of the LEDs. Figure 4 shows that the seven_seg module works as intdended and that I'm able to drive a seven-segment display as intended. Finally, Figure 5 shows that the top module works as intended and that it accurately merges all sub-modules. Again, any red signals are just don't cares (x's) from one of the LEDs.
+
+#### Hardware Verification
+
+Hardware was also tested via visual confirmation of the on-board LEDs and the seven-segment display lighting up as intetned when switches were flipped in different configurations.
 
 ### Conclusion
 
@@ -47,7 +68,7 @@ For the following AI Prototype, I will be using ChatGPT.
 Write SystemVerilog HDL to leverage the internal high speed oscillator in the Lattice UP5K FPGA and blink an LED at 2 Hz. Take full advantage of SystemVerilog syntax, for example, using logic instead of wire and reg.
 
 #### Generated Code
-
+```systemverilog
 // Blink an LED at 2 Hz using the internal HFOSC of the UP5K
 module top (
     output logic led   // drive LED pin
@@ -86,7 +107,7 @@ module top (
     end
 
 endmodule
-
+```
 
 #### Reflection
 

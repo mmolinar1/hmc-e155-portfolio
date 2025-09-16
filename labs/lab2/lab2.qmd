@@ -31,7 +31,7 @@ The block diagram in Figure 1 demonstrates the overall architecture of the desig
 
 #### Schematic
 
-![Figure 2](images/lab2_schematic.jpeg)(Figure 2: Schematic of physical layout)
+![Figure 2](images/lab2_mm_schematic.jpeg)(Figure 2: Schematic of physical layout)
 
 Figure 2 shows the physical layout of the design. The anodes of seven-segment display were connected using 330 Ω current-limmiting resistors and a 2N3906 PNP transitor to ensure the output current was less than 8 mA. The LEDs of the seven-segment display were connected using 1k Ω resitors, and the off-board LEDs displaying the sum of the switch inputs were connected using 560 Ω resistors. 
 
