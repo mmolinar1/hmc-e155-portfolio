@@ -68,6 +68,35 @@ ul.task-list li input[type="checkbox"] {
   }
 }</script>
 
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 <link rel="stylesheet" href="../../styles.css">
 </head>
@@ -116,8 +145,22 @@ ul.task-list li input[type="checkbox"] {
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
-        
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#lab-5-interrupts" id="toc-lab-5-interrupts" class="nav-link active" data-scroll-target="#lab-5-interrupts">Lab 5: Interrupts</a>
+  <ul class="collapse">
+  <li><a href="#introduction" id="toc-introduction" class="nav-link" data-scroll-target="#introduction">Introduction</a></li>
+  <li><a href="#design-and-testing-methodology" id="toc-design-and-testing-methodology" class="nav-link" data-scroll-target="#design-and-testing-methodology">Design and Testing Methodology</a></li>
+  <li><a href="#technical-documentation" id="toc-technical-documentation" class="nav-link" data-scroll-target="#technical-documentation">Technical Documentation:</a></li>
+  <li><a href="#results-and-discussion" id="toc-results-and-discussion" class="nav-link" data-scroll-target="#results-and-discussion">Results and Discussion</a></li>
+  <li><a href="#conclusion" id="toc-conclusion" class="nav-link" data-scroll-target="#conclusion">Conclusion</a></li>
+  <li><a href="#ai-prototype-summary" id="toc-ai-prototype-summary" class="nav-link" data-scroll-target="#ai-prototype-summary">AI Prototype Summary</a></li>
+  </ul></li>
+  </ul>
+</nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"></header>
@@ -125,8 +168,90 @@ ul.task-list li input[type="checkbox"] {
 
 
 
+<section id="lab-5-interrupts" class="level2">
+<h2 class="anchored" data-anchor-id="lab-5-interrupts">Lab 5: Interrupts</h2>
+<section id="introduction" class="level3">
+<h3 class="anchored" data-anchor-id="introduction">Introduction</h3>
+<p>In this lab, I used an MCU to determine the speed of a motor by reading from a quadrature encoder using interrupts.</p>
+</section>
+<section id="design-and-testing-methodology" class="level3">
+<h3 class="anchored" data-anchor-id="design-and-testing-methodology">Design and Testing Methodology</h3>
+<section id="design-methodology" class="level4">
+<h4 class="anchored" data-anchor-id="design-methodology">Design Methodology</h4>
+<p>This design interrupts to detect pulses from the encoder and calculate the veolcity and direction the motor is spinning in. For both interrupts, rising and falling edge triggers are enabled to achieve the highest resolution measuremnt. Finally, the speed and direction is displayed using fprintf() in units of rev/s at a rate of 2 Hz.</p>
+<p>As far as hardware goes, the design uses a 25GA-370 DC Motor and a power supply to adjust the speed.</p>
+</section>
+<section id="testing-methodology" class="level4">
+<h4 class="anchored" data-anchor-id="testing-methodology">Testing Methodology</h4>
+<p>Testing this design was done via hardware verification. The motor was connected to the MCU, and I ensured an accurate velocity measurement was being displayed on the debugging window.</p>
+</section>
+</section>
+<section id="technical-documentation" class="level3">
+<h3 class="anchored" data-anchor-id="technical-documentation">Technical Documentation:</h3>
+<p>The source code for the project can be found in the associated <a href="https://github.com/mmolinar1/e155/tree/main/lab5/mcu/src">GitHub repository</a>.</p>
+<section id="schematic" class="level4">
+<h4 class="anchored" data-anchor-id="schematic">Schematic</h4>
+<p><img src="images/lab5_schematic.png" class="img-fluid" alt="Figure 1">(Figure 1: Schematic of physical layout)</p>
+<p>Figure 1 shows the physical layout of the design. The MCU was connected to a 25GA-370 DC Motor, which was also powered with an external power supply.</p>
+</section>
+<section id="flowchart" class="level4">
+<h4 class="anchored" data-anchor-id="flowchart">Flowchart</h4>
+<p><img src="images/lab5_flow_chart.png" class="img-fluid" alt="Figure 2">(Figure 2: Interrupt Flowchart)</p>
+<p>Figure 2 shows each interrupt and the main loop that is executed.</p>
+</section>
+<section id="measured-speed-vs.-true-motor-speed" class="level4">
+<h4 class="anchored" data-anchor-id="measured-speed-vs.-true-motor-speed">Measured Speed vs.&nbsp;True Motor Speed</h4>
+<p>First, I counted the number of pulses and used the following equation to find speed in terms of revolutions per second. Here, count refers to the pulse count and time referes to the time in ms. I was using a display rate of 2 Hz, so time was 500 ms.</p>
+<p><span class="math display">\[
+rps = \frac{\text{count} \times \left(\frac{1000}{\text{time}}\right)}{4 \times 408}
+\]</span></p>
+<p>To find the true motor speed, I plugged one of the GPIO pins to an oscilloscope and measured the period of a pulse. Then I used the following eqaution to calculate speed in terms of revolutions per second. <span class="math display">\[
+rps = \frac{1}{period \times 408}
+\]</span></p>
+<p><img src="images/lab5_rps.png" class="img-fluid" alt="Figure 3">(Figure 3: Oscilloscope trace of a GPIO pin)</p>
+<p>Figure 3 shows each interrupt and the main loop that is executed. Here the period is 1.040 ms, so plugging into the equation above, I get a true motor speed of 2.36 rps at 10 V. This is similar to my measured speed which is around 2.4 rps at 10 V.</p>
+</section>
+</section>
+<section id="results-and-discussion" class="level3">
+<h3 class="anchored" data-anchor-id="results-and-discussion">Results and Discussion</h3>
+<section id="hardware" class="level4">
+<h4 class="anchored" data-anchor-id="hardware">Hardware</h4>
+<p>Accurate speeds were being measured from the motor and displayed in debugging mode at a rate of 2 Hz.</p>
+</section>
+<section id="interrupt-vs.-polling-at-high-speeds" class="level4">
+<h4 class="anchored" data-anchor-id="interrupt-vs.-polling-at-high-speeds">Interrupt vs.&nbsp;Polling at High Speeds</h4>
+<p><img src="images/interrupt.png" class="img-fluid" alt="Figure 3">(Figure 3: Interrupt Oscilloscope Trace)</p>
+<p><img src="images/polling.png" class="img-fluid" alt="Figure 4">(Figure 4: Polling Oscilloscope Trace)</p>
+<p>Figures 3 and 4 compare interrupt based code vs.&nbsp;polling at high speeds. In both traces, the blue signal is an input signal from the motor, and the yellow signal is an output signal from a GPIO pin, which just flips at each edge. In both cases I put a 100 ms delay in the main loop. Figure 3 shows that the interrupts can register inputs and then output something with minimal delay. However, Figure 4 shows the polling method where the output trace (in yellow is heavily aliased). This is because the polling method requires waiting the full 100 ms everytime which is much slower than the input frequency. On the other hand, the interrupt bypasses this. This supports the fact that if the polling period is T, then the average interface latency would be T/2, or at worst T <a href="https://users.ece.utexas.edu/~valvano/Volume1/E-Book/C12_Interrupts.htm">Chapter 12: Interrupts</a>. On the other hand, interrupts have much smaller latency.</p>
+</section>
+</section>
+<section id="conclusion" class="level3">
+<h3 class="anchored" data-anchor-id="conclusion">Conclusion</h3>
+<p>This design sucessfully used two interrupts to read from a quadrature encoder and measure and record the speed and direction in which a motor is spinning. I spent a total of 10 hours on this lab.</p>
+</section>
+<section id="ai-prototype-summary" class="level3">
+<h3 class="anchored" data-anchor-id="ai-prototype-summary">AI Prototype Summary</h3>
+<p>For the following AI Prototype, I will be using ChatGPT.</p>
+<section id="prompt" class="level5">
+<h5 class="anchored" data-anchor-id="prompt">Prompt</h5>
+<p>Write me interrupt handlers to interface with a quadrature encoder. I’m using the STM32L432KC, what pins should I connect the encoder to in order to allow it to easily trigger the interrupts?</p>
+</section>
+<section id="response" class="level5">
+<h5 class="anchored" data-anchor-id="response">Response</h5>
+<p>According to ChatGPT, I should use pins STM32 HAL is easier. In this method, each edge (rising or falling) is triggered, the ISR reads A and B to determine direction, and encoder updates its count accordingly.</p>
+</section>
+<section id="generated-code" class="level5">
+<h5 class="anchored" data-anchor-id="generated-code">Generated Code</h5>
+<p>The code generated for these prompts can be found <a href="https://github.com/mmolinar1/e155/tree/main/lab5/mcu/ai_proto">here</a>.</p>
+</section>
+<section id="reflection" class="level5">
+<h5 class="anchored" data-anchor-id="reflection">Reflection</h5>
+<p>I think the quality of the output was not great. I think at a high-level, the LLM understood what to do, but from what I could tell, the implementation was not quite there. First, it used the hardware abstraction layer STM32 HAL, which is reasonable, but I didn’t understand what it was untill I asked. The LLM generated code that was different than mine. It used STM32 HAL, different pins, and included all code in one file. For some reason, the LLM suggested a polling type method using timers, but I think this is just a hallucination because using polling will cause some latency. Overall, I think the LLM does work better as a sounding board as opposed to just generating code, because it often has bugs in the code it generates.</p>
 
 
+</section>
+</section>
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
