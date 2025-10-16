@@ -95,6 +95,7 @@ The correct notes were being play from the speaker and volume was controllable u
 
 #### Hardware Demo
 
+{{< video music_demo.mp4 >}}
 
 ### Conclusion
 
