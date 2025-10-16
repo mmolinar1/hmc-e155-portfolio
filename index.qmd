@@ -5,13 +5,12 @@ about:
   template: jolla
   links:
     - icon: linkedin
-      text: LinkedIn
-      href: https://www.linkedin.com/in/matthew-molinar
+      text: "LinkedIn"
+      href: "https://www.linkedin.com/in/matthew-molinar"
     - icon: github
-      text: Github
-      href: https://github.com/mmolinar1 
+      text: "Github"
+      href: "https://github.com/mmolinar1"
 ---
 
 Matthew Molinar is an Engineering student at [Harvey Mudd College](https://hmc.edu).
 His interests are in the field of electrical engineering, with a particular focus on RF and digital signal processing.
-
