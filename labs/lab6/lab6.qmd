@@ -30,7 +30,9 @@ Figure 2 shows the physical layout of the design. The MCU was connected to a DS1
 
 #### Hardware
 
-The LED was able to be toggled based on user inputs on the webpage. The webpage also displayed accurate temperature readings with different resolutions based on user inputs.
+The LED was able to be toggled based on user inputs on the webpage. The webpage also displayed accurate temperature readings with different resolutions based on user inputs. Below is a screenshot of the working webpage.
+
+![Figure 3](images/e155-webpage.png)(Figure 3: Screenshot of Working Webpage)
 
 ### Conclusion
 
@@ -46,7 +48,7 @@ I’m making a web portal to interface with a temperature sensor. Create a HTML 
 
 ###### Prompt 1 Generated Website
 
-![Figure 3](images/ai_proto_1.png)(Figure 3: Webpage created by ChatGPT)
+![Figure 4](images/ai_proto_1.png)(Figure 4: Webpage created by ChatGPT)
 
 ##### Prompt 2
 
